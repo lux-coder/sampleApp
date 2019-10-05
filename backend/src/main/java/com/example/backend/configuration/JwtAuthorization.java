@@ -3,6 +3,8 @@ package com.example.backend.configuration;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,9 +21,11 @@ import java.util.Collection;
 import java.util.List;
 
 public class JwtAuthorization extends OncePerRequestFilter {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        logger.info("In doFilterInternal");
         httpServletResponse.addHeader("Access-Control-Allow-Origin", ApplicationEnvironment.CLIENT_DOMAIN_URL);
 
         httpServletResponse.addHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, "
@@ -40,6 +44,7 @@ public class JwtAuthorization extends OncePerRequestFilter {
             }
         } else {
             String jwtToken = httpServletRequest.getHeader(ApplicationEnvironment.HEADER_TYPE);
+            logger.info("Ive got token {}", jwtToken);
             if (jwtToken == null || !jwtToken.startsWith(ApplicationEnvironment.TOKEN_PREFIX)) {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
                 return;
@@ -47,6 +52,7 @@ public class JwtAuthorization extends OncePerRequestFilter {
             JWT.require(Algorithm.HMAC256(ApplicationEnvironment.SECRET));
             DecodedJWT jwt = JWT.decode(jwtToken.substring(ApplicationEnvironment.TOKEN_PREFIX.length()));
             String username = jwt.getSubject();
+            logger.info("Username from JWT is {}", username);
             List<String> roles = jwt.getClaims().get("roles").asList(String.class);
             Collection<GrantedAuthority> authorities = new ArrayList<>();
             roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));

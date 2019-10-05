@@ -1,5 +1,7 @@
 package com.example.backend.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +20,12 @@ import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "/user/profile/**", "/user/**" };
+    //private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "user/list", "user/**" };
+    //private static final String[] PUBLIC_MATCHERS = { "/**" };
+    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "/user/profile/**", "/user/**", "/delete" };
 
     @Autowired
     private UserDetailsService userDetailsService;

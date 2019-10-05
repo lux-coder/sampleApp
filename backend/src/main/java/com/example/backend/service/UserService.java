@@ -30,6 +30,8 @@ public interface UserService {
 
     public Role findUserRoleByName(String roleName) throws SQLException;
 
+    public Role findRoleById(Integer role_id);
+
     public void updateUserPassword(User user, String password);
 
     public void deleteUser(User user);

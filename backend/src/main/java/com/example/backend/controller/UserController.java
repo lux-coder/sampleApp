@@ -53,35 +53,38 @@ public class UserController {
         logger.info("In /register endpoint");
         String username = request.get("username");
         logger.info("Check if USERNAME exists: {}", username);
-        if (userService.findByUsername(username) != null){
+        if (userService.findByUsername(username).getId() != null){
             return new ResponseEntity<>("Username exists!", HttpStatus.CONFLICT);
-        }
-        logger.info("Setting user data before try user save");
+        } else {
+            logger.info("Setting user data before try user save");
 
-        String email = request.get("email");
-        String firstName = request.get("firstName");
-        String lastName = request.get("lastName");
-        Date dateOfBirth = java.sql.Date.valueOf(request.get("dateOfBirth"));
-        //Integer userRole = Integer.valueOf(request.get("userRole"));
-        Integer userRole = 1;
-
-        try {
-            User user = userService.saveUser(username, email, firstName, lastName, dateOfBirth, userRole);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity<>("Error occurred during registration!", HttpStatus.BAD_REQUEST);
+            String email = request.get("email");
+            String firstName = request.get("firstName");
+            String lastName = request.get("lastName");
+            Date dateOfBirth = java.sql.Date.valueOf(request.get("dateOfBirth"));
+            //Integer userRole = Integer.valueOf(request.get("userRole"));
+            Integer userRole = 1;
+            try {
+                User user = userService.saveUser(username, email, firstName, lastName, dateOfBirth, userRole);
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } catch (Exception e){
+                return new ResponseEntity<>("Error occurred during registration!", HttpStatus.BAD_REQUEST);
+            }
         }
+
     }
 
     @PostMapping("/update")
     public ResponseEntity<?> updateProfile(@RequestBody HashMap<String, String> request){
         logger.info("In updateProfile endpoint");
         String id = request.get("id");
-        User user = userService.findById(Integer.parseInt(id));
-        if(user == null){
+        if( userService.findById(Integer.parseInt(id)).getId() == null){
             return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
         }
+
+        //TODO It should take value from request not database!!!
         try {
+            User user = userService.findById(Integer.parseInt(id));
             userService.updateUser(user, request);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e){
@@ -120,11 +123,18 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteUser(@RequestBody HashMap<String, String> request) throws SQLException {
+    public ResponseEntity<?> deleteUser(@RequestBody HashMap<String, String> request) {
         logger.info("In deleteUser endpoint");
         String username = request.get("username");
-        User user = userService.findByUsername(username);
-        userService.deleteUser(user);
+        User user = null;
+        try {
+            user = userService.findByUsername(username);
+            logger.info("THIS IS USER: {}",user.toString());
+            userService.deleteUser(user);
+        } catch (SQLException e) {
+            logger.error("Error {} {}", e.getMessage(), e);
+
+        }
         return new ResponseEntity<String>("User deleted!", HttpStatus.OK);
     }
 }

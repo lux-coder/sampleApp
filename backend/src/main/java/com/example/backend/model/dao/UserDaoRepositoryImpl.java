@@ -18,8 +18,8 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     private static final String CREATE_SQL = "INSERT INTO user (username, password, email, firstName, lastName, dateOfBirth) values (?, ?, ?, ?, ?, ?)";
     private static final String CREATE_SQL_WITH_ROLE = "INSERT INTO user (username, password, email, firstName, lastName, dateOfBirth, userRole) values (?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_SQL = "";
-    private static final String DELETE_SQL = "";
-    private static final String FIND_ALL_SQL = "SELECT id, username, password, email, firstName, lastName, dateOfBirth FROM user";
+    private static final String DELETE_SQL = "DELETE FROM user WHERE id = ?";
+    private static final String FIND_ALL_SQL = "SELECT id, username, password, email, firstName, lastName, dateOfBirth, userRole FROM user";
     //private static final String GET_BY_USERNAME = "SELECT id, username, password, email, firstName, lastName, dateOfBirth FROM user WHERE username = ?";
     private static final String GET_BY_USERNAME = "SELECT * FROM user WHERE username = ?";
 
@@ -62,7 +62,18 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     public void update(User user) { }
 
     @Override
-    public void delete(int id) { }
+    public void delete(int id) {
+        logger.info("In delete");
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(DELETE_SQL);
+            statement.setInt(1,id);
+            int resultSet = statement.executeUpdate();
+            logger.info("User deleted");
+        } catch (SQLException e){
+            logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
+        }
+    }
 
     @Override
     public User findById(int id) {
@@ -95,40 +106,60 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     }
 
     @Override
-    public User getByUsername(String username) throws SQLException {
+    public User getByUsername(String username)  {
         logger.info("In getByUsername");
+        User user = new User();
 
-        PreparedStatement statement = null;
-
-            statement = connection.prepareStatement(GET_BY_USERNAME);
-            statement.setString(1, username);
+        try {
+            PreparedStatement statement = connection.prepareStatement(GET_BY_USERNAME);
+            statement.setString(1,username);
             ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.first()){
-                try {
-                    logger.info("STATMENT {}", resultSet.toString());
-                    Integer id = resultSet.getInt("id");
-                    username = resultSet.getString("userName");
-                    String password =resultSet.getString("password");
-                    String email = resultSet.getString("email");
-                    String firstName = resultSet.getString("firstName");
-                    String lastName = resultSet.getString("lastName");
-                    Date dateOfBirth = resultSet.getDate("dateOfBirth");
-                    Integer userRole = resultSet.getInt("userRole");
-
-                    return new User(id,username,password,email,firstName,lastName, dateOfBirth, userRole);
-                } catch (Exception e){
-                    logger.error("Exception due to {} with stacktrace {}", e.getMessage(), e);
-                }
-            } else{
-
-                logger.info("NO USER RETURN NULL");
-                return null;
+            while (resultSet.next()) {
+                user.setId(resultSet.getInt("id"));
+                user.setUsername(resultSet.getString("userName"));
+                user.setPassword(resultSet.getString("password"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFirstName(resultSet.getString("firstName"));
+                user.setLastName(resultSet.getString("lastName"));
+                user.setDateOfBirth(resultSet.getDate("dateOfBirth"));
+                user.setUserRole(resultSet.getInt("userRole"));
             }
+            logger.info("User {}", user.toString());
+        } catch (SQLException e){
+            logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
+        }
+        logger.info("User before return {}", user.toString());
+        return user;
 
+//
+//        PreparedStatement statement = null;
+//
+//        statement = connection.prepareStatement(GET_BY_USERNAME);
+//        statement.setString(1, username);
+//        ResultSet resultSet = statement.executeQuery();
+//
+//        if (resultSet.first()){
+//            try {
+//                logger.info("STATMENT {}", resultSet.toString());
+//                Integer id = resultSet.getInt("id");
+//                username = resultSet.getString("userName");
+//                String password =resultSet.getString("password");
+//                String email = resultSet.getString("email");
+//                String firstName = resultSet.getString("firstName");
+//                String lastName = resultSet.getString("lastName");
+//                Date dateOfBirth = resultSet.getDate("dateOfBirth");
+//                Integer userRole = resultSet.getInt("userRole");
+//
+//                return new User(id,username,password,email,firstName,lastName, dateOfBirth, userRole);
+//            } catch (Exception e){
+//                logger.error("Exception due to {} with stacktrace {}", e.getMessage(), e);
+//            }
+//        } else{
+//            logger.info("NO USER RETURN NULL");
+//            return null;
+//        }
+//        return null;
 
-
-            return null;
     }
 
     @Override

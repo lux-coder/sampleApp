@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService{
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setDateOfBirth(dateOfBirth);
+        //TODO Check for role in DB table role
         user.setUserRole(userRole);
         userDaoRepository.create(user);
 
@@ -77,15 +78,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findByUsername(String username) throws SQLException {
+    public User findByUsername(String username)  {
         logger.info("In findByUsername");
         User user = new User();
-        if( userDaoRepository.getByUsername(username) != null){
-            return userDaoRepository.getByUsername(username);
-        } else {
+        try {
+            user = userDaoRepository.getByUsername(username);
+        } catch (SQLException e) {
             logger.info("No user with that name");
-            return null;
         }
+        return user;
     }
 
     @Override
@@ -127,6 +128,17 @@ public class UserServiceImpl implements UserService{
     public Role findUserRoleByName(String roleName) throws SQLException {
         logger.info("In findUserRoleByName");
         return roleDaoRepository.findByRoleName(roleName);
+    }
+
+    @Override
+    public Role findRoleById(Integer role_id) {
+        logger.info("In findRoleById");
+        if (roleDaoRepository.findById(role_id) != null){
+            return roleDaoRepository.findById(role_id);
+        }else {
+            logger.info("No such role");
+            return null;
+        }
     }
 
     @Override
