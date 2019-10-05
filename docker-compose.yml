@@ -1,0 +1,25 @@
+version: "3.4"
+
+networks:
+  koios:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.30.0.0/24
+
+services:
+  database:
+    image: mysql
+    ports:
+      - 3306:3306
+    networks:
+      koios:
+        ipv4_address: 172.30.0.3
+
+  backend:
+    image: backend
+    ports:
+      - 8080:8080
+    networks:
+      koios:
+        ipv4_address: 172.30.0.3

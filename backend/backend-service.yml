@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: koios-namespace
+spec:
+  selector:
+    app: backend
+  type: NodePort
+  ports:
+    - name: web-port
+      port: 8080
+      targetPort: 8080
