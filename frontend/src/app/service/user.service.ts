@@ -9,7 +9,7 @@ import { ServerConstant } from '../constant/server-constant';
 @Injectable({
   providedIn: 'root'
 })
-export class AccountService {
+export class UserService {
 
   constant: ServerConstant = new ServerConstant();
   public host: string = this.constant.host;
