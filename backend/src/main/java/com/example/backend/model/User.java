@@ -21,11 +21,11 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
-    private Set<UserRole> userRoles = new HashSet<>();
+    private Integer userRole;
 
     public User(){}
 
-    public User(Integer id, String username, String password, String email, String firstName, String lastName, Date dateOfBirth, Set<UserRole> userRoles) {
+    public User(Integer id, String username, String password, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -33,6 +33,6 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
-        this.userRoles = userRoles;
+        this.userRole = userRole;
     }
 }

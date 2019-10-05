@@ -4,18 +4,19 @@ import com.example.backend.model.Role;
 import com.example.backend.model.User;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
 public interface UserService {
 
-    public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth);
+    public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) throws SQLException;
 
     public User saveUser(String username, String password, String email, String firstName, String lastName, Date dateOfBirth);
 
     public User saveUser(User user);
 
-    public User findByUsername(String username);
+    public User findByUsername(String username) throws SQLException;
 
     public User findByEmail(String email);
 
@@ -27,7 +28,7 @@ public interface UserService {
 
     public Role saveRole(Role role);
 
-    public Role findUserRoleByName(String roleName);
+    public Role findUserRoleByName(String roleName) throws SQLException;
 
     public void updateUserPassword(User user, String password);
 

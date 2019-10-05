@@ -2,6 +2,7 @@ package com.example.backend.model.dao;
 
 import com.example.backend.model.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface UserDaoRepository {
@@ -16,7 +17,7 @@ public interface UserDaoRepository {
 
     public List<User> findAll();
 
-    public User getByUsername(String username);
+    public User getByUsername(String username) throws SQLException;
 
     public User getByEmail(String email);
 }

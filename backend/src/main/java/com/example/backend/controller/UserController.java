@@ -12,11 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<?> getUserInfo(@PathVariable String username){
+    public ResponseEntity<?> getUserInfo(@PathVariable String username) throws SQLException {
         logger.info("In getUserInfo endpoint");
         User user = userService.findByUsername(username);
         if (user == null){
@@ -48,20 +49,24 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody HashMap<String, String> request){
+    public ResponseEntity<?> register(@RequestBody HashMap<String, String> request) throws SQLException {
         logger.info("In /register endpoint");
         String username = request.get("username");
+        logger.info("Check if USERNAME exists: {}", username);
         if (userService.findByUsername(username) != null){
             return new ResponseEntity<>("Username exists!", HttpStatus.CONFLICT);
         }
+        logger.info("Setting user data before try user save");
 
         String email = request.get("email");
         String firstName = request.get("firstName");
         String lastName = request.get("lastName");
         Date dateOfBirth = java.sql.Date.valueOf(request.get("dateOfBirth"));
+        //Integer userRole = Integer.valueOf(request.get("userRole"));
+        Integer userRole = 1;
 
         try {
-            User user = userService.saveUser(username, email, firstName, lastName, dateOfBirth);
+            User user = userService.saveUser(username, email, firstName, lastName, dateOfBirth, userRole);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>("Error occurred during registration!", HttpStatus.BAD_REQUEST);
@@ -86,7 +91,7 @@ public class UserController {
     }
 
     @PostMapping("/changePassword")
-    public ResponseEntity<?> changePassword(@RequestBody HashMap<String, String> request){
+    public ResponseEntity<?> changePassword(@RequestBody HashMap<String, String> request) throws SQLException {
         logger.info("In changePassword endpoint");
         String username = request.get("username");
         User user = userService.findByUsername(username);
@@ -115,7 +120,7 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteUser(@RequestBody HashMap<String, String> request){
+    public ResponseEntity<?> deleteUser(@RequestBody HashMap<String, String> request) throws SQLException {
         logger.info("In deleteUser endpoint");
         String username = request.get("username");
         User user = userService.findByUsername(username);

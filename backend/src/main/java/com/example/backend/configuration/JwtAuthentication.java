@@ -55,7 +55,7 @@ public class JwtAuthentication extends UsernamePasswordAuthenticationFilter {
                     roles.add(authority.getAuthority());
                 });
         String jwtToken = JWT.create()
-                .withIssuer("odak.skywalker")
+                .withIssuer(request.getRequestURI())
                 .withSubject(user.getUsername())
                 .withArrayClaim("roles", roles.stream().toArray(String[]::new))
                 .withExpiresAt(new Date(System.currentTimeMillis()+ ApplicationEnvironment.EXPIRATION_TIME))

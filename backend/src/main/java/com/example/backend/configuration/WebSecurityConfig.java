@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] PUBLIC_MATCHERS = { "/users/login", "/users/register", "/users/resetPassword/**", "/users/list" };
+    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "/user/profile/**", "/user/**" };
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -47,47 +47,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(jwtAuthentication)
                 .addFilterBefore(new JwtAuthorization(), UsernamePasswordAuthenticationFilter.class);
     }
-
-
-
-
-
-//
-//    @Override
-//    @Bean
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
-//
-//    @Autowired
-//    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService)
-//                .passwordEncoder(encoder());
-//    }
-//
-//    @Bean
-//    public JwtAuthenticationFilter authenticationTokenFilterBean() throws Exception {
-//        return new JwtAuthenticationFilter();
-//    }
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.cors().and().csrf().disable().
-//                authorizeRequests()
-//                .antMatchers("/token/*", "/signup").permitAll() //disable token and signup endpoints from authorization
-//                .anyRequest().authenticated()
-//                .and()
-//                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//        http
-//                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-//    }
-//
-//    @Bean
-//    public BCryptPasswordEncoder encoder(){
-//        return new BCryptPasswordEncoder();
-//    }
-//
-
-
 }

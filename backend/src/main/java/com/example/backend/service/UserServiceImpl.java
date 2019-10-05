@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,10 +44,11 @@ public class UserServiceImpl implements UserService{
     private JavaMailSender javaMailSender;
 
     @Override
-    public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth) {
+    public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) throws SQLException {
         logger.info("In saveUser");
         String password = RandomStringUtils.randomAlphanumeric(8);
         String encryptedPassword = bCryptPasswordEncoder.encode(password);
+        logger.info("password is {}", password);
 
         User user = new User();
         user.setUsername(username);
@@ -55,9 +57,7 @@ public class UserServiceImpl implements UserService{
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setDateOfBirth(dateOfBirth);
-//        Set<UserRole> userRoles = new HashSet<>();
-//        userRoles.add(new UserRole(user, userService.findUserRoleByName("USER")));
-//        user.setUserRoles(userRoles);
+        user.setUserRole(userRole);
         userDaoRepository.create(user);
 
         //javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
@@ -77,9 +77,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findByUsername(String username) {
+    public User findByUsername(String username) throws SQLException {
         logger.info("In findByUsername");
-        return userDaoRepository.getByUsername(username);
+        User user = new User();
+        if( userDaoRepository.getByUsername(username) != null){
+            return userDaoRepository.getByUsername(username);
+        } else {
+            logger.info("No user with that name");
+            return null;
+        }
     }
 
     @Override
@@ -118,7 +124,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Role findUserRoleByName(String roleName) {
+    public Role findUserRoleByName(String roleName) throws SQLException {
         logger.info("In findUserRoleByName");
         return roleDaoRepository.findByRoleName(roleName);
     }

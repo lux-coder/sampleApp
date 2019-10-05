@@ -13,13 +13,11 @@ public class Role implements Serializable {
 
     private Integer roleId;
     private String name;
-    private Set<UserRole> userRoles = new HashSet<>();
 
     public Role() { }
 
-    public Role(Integer roleId, String name, Set<UserRole> userRoles) {
+    public Role(Integer roleId, String name) {
         this.roleId = roleId;
         this.name = name;
-        this.userRoles = userRoles;
     }
 }
