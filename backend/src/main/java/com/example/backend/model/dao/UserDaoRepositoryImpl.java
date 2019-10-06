@@ -62,7 +62,7 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     }
 
     @Override
-    public void register(User user) {
+    public User register(User user) {
         logger.info("In register User");
         if(user != null){
             try (PreparedStatement ps = connection.prepareStatement(REGISTER_SQL, Statement.RETURN_GENERATED_KEYS)){
@@ -81,7 +81,11 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
                 e.printStackTrace();
             }
             logger.info("User registered");
+
+
         }
+
+        return user;
 
     }
 

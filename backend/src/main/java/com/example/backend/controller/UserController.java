@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -58,7 +59,7 @@ public class UserController {
         } else {
             logger.info("Setting user data before try user save");
             String email = request.get("email");
-            String firstName = request.get("firstName");
+            String firstName = request.get("name");
             try {
                 User user = userService.saveUser(username, email, firstName);
                 return new ResponseEntity<>(user, HttpStatus.OK);

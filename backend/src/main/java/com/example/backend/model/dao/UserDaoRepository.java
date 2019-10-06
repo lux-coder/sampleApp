@@ -9,7 +9,7 @@ public interface UserDaoRepository {
 
     public void create(User user);
 
-    public void register(User user);
+    public User register(User user);
 
     public void update(User user);
 

@@ -3,6 +3,90 @@
 <!-- Page Content -->
 <div class="container">
   <h1 class="mt-4 mb-3"></h1>
+
+  <div class="container bootstrap-snippet header-container">
+    <div class="">
+      <div class="container py-5">
+        <div *ngIf="user?.id > 0" class="media col-md-10 col-lg-8 col-xl-7 p-0 my-4 mx-auto">        
+          <div class="media-body ml-5">
+  
+              <h6 class="">{{ user?.username }}</h6>
+              <h4 class="font-weight-bold ">{{ user?.firstName }}</h4>
+  
+              
+                <a class="nav-link py-4" data-toggle="tab" href="#settings">Details</a>
+  
+                <div class="tab-pane fade col-md-10 col-lg-8 col-xl-7 p-0 my-4 mx-auto" id="settings">
+                  <form #updateProfileForm="ngForm" (ngSubmit)="onUpdateUser(updateProfileForm.value)" enctype="multipart/form-data">
+                    <input type="hidden" class="form-control" name="id" ngModel="{{ user?.id }}" required />
+            
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input ngModel="{{ user?.username }}" type="text" class="form-control" name="username" id="username" placeholder="Username" disabled />
+                    </div>
+            
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                      <input ngModel="{{ user?.email }}" type="text" class="form-control" name="email" id="email" placeholder="Email" />          
+                    </div>
+            
+                    <div class="form-group">
+                            <label for="name">First Name</label>
+                            <input ngModel="{{ user?.firstName }}" type="text" class="form-control" name="firstName" id="firstName" aria-describedby="name"
+                              placeholder="Name" />
+                    </div>
+            
+                    <div class="form-group">
+                            <label for="name">Last Name</label>
+                            <input ngModel="{{ user?.lastName }}" type="text" class="form-control" name="lastName" id="lastName" aria-describedby="name"
+                              placeholder="Name" />
+                    </div>
+            
+                    <div class="form-group">
+                            <label for="name">Date of birth</label>
+                            <input ngModel="{{ user?.dateOfBirth }}" type="text" class="form-control" name="dateOfBirth" id="dateOfBirth" aria-describedby="name"
+                              placeholder="Name" />
+                    </div>
+                    
+                    <button routerLink="/home" class="btn btn-secondary" type="button" style="margin-right: 20px;">
+                      Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                  </form>
+                  <br /><br />
+                  <button class="btn" data-toggle="modal" data-target="#changePassword" style="color: #EB6864;">
+                    Chage Password</button><br /><br />
+                </div>
+              
+            
+            
+          </div>
+        </div>
+      </div>
+      <ul class="nav nav-tabs tabs-alt justify-content-center" style="margin-top:-60px;">
+        
+        <li *ngIf="user?.username == userService.loggInUsername" class="nav-item">
+          <a class="nav-link py-4" data-toggle="tab" href="#settings">Settings</a>
+        </li>
+      </ul>
+    </div>
+    
+      
+    
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   <!-- /.row -->
 </div>

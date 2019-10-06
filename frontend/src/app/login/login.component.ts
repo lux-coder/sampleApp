@@ -44,8 +44,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.userService.saveToken(token);
           if (this.userService.redirectUrl) {
             this.router.navigateByUrl(this.userService.redirectUrl);
+            console.log("IM LOGGED IN");
           } else {
             this.router.navigateByUrl('/home');
+            console.log("IM LOGGED IN?????");
           }
           this.loadingService.isLoading.next(false);
         },

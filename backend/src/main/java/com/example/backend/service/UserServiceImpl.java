@@ -11,15 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -47,6 +49,9 @@ public class UserServiceImpl implements UserService{
     public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) throws SQLException {
         logger.info("In saveUser");
         String password = RandomStringUtils.randomAlphanumeric(8);
+
+        //import org.springframework.security.crypto.password.PasswordEncoder;
+
         String encryptedPassword = bCryptPasswordEncoder.encode(password);
         logger.info("password is {}", password);
 
@@ -59,9 +64,12 @@ public class UserServiceImpl implements UserService{
         user.setDateOfBirth(dateOfBirth);
         //TODO Check for role in DB table role
         user.setUserRole(userRole);
+        //javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
         userDaoRepository.create(user);
 
-        //javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
+//        javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
+        logger.info("mail shpuič ne semt");
+        //emailConstructor.constructNewUserEmail(user, password);
         return user;
     }
 
@@ -84,7 +92,10 @@ public class UserServiceImpl implements UserService{
         user.setFirstName(firstName);
         userDaoRepository.register(user);
 
-        //javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
+//        javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
+
+        emailConstructor.constructNewUserEmail(user, password);
+
         return user;
     }
 
@@ -173,5 +184,21 @@ public class UserServiceImpl implements UserService{
         logger.info("In deleteUser");
         userDaoRepository.delete(user.getId());
 
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, SQLException {
+        logger.info("In loadUserByUsername from userDetailService");
+        com.example.backend.model.User user = userService.findByUsername(username);
+        if(user.getId() == null){
+            throw new UsernameNotFoundException("Username " + username + "not found!");
+        }
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        Integer role_id = user.getUserRole();
+        Role role = userService.findRoleById(role_id);
+        logger.info("GOt role {}", role.getName());
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        //return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }

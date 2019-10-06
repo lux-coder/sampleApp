@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) throws SQLException;
 
