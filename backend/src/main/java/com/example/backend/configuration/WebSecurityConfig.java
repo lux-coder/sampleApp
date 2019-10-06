@@ -34,11 +34,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception{
         authenticationManagerBuilder.userDetailsService(userDetailsService)
-                                    .passwordEncoder(bCryptPasswordEncoder);
+                                    .passwordEncoder(passwordEncoder);
     }
 
     @Override

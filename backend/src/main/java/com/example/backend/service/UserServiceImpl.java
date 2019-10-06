@@ -2,7 +2,6 @@ package com.example.backend.service;
 
 import com.example.backend.model.Role;
 import com.example.backend.model.User;
-import com.example.backend.model.UserRole;
 import com.example.backend.model.dao.RoleDaoRepository;
 import com.example.backend.model.dao.UserDaoRepository;
 import com.example.backend.utility.EmailConstructor;
@@ -15,13 +14,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService{
     private RoleDaoRepository roleDaoRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private EmailConstructor emailConstructor;
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService{
 
         //import org.springframework.security.crypto.password.PasswordEncoder;
 
-        String encryptedPassword = bCryptPasswordEncoder.encode(password);
+        String encryptedPassword = passwordEncoder.encode(password);
         logger.info("password is {}", password);
 
         User user = new User();
@@ -82,7 +83,7 @@ public class UserServiceImpl implements UserService{
     public User saveUser(String username, String email, String firstName) {
         logger.info("In saveUser from register form");
         String password = RandomStringUtils.randomAlphanumeric(8);
-        String encryptedPassword = bCryptPasswordEncoder.encode(password);
+        String encryptedPassword = passwordEncoder.encode(password);
         logger.info("password is {}", password);
 
         User user = new User();
@@ -174,7 +175,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void updateUserPassword(User user, String password) {
         logger.info("In updateUserPassword");
-        String encryptedPassword = bCryptPasswordEncoder.encode(password);
+        String encryptedPassword = passwordEncoder.encode(password);
         user.setPassword(encryptedPassword);
         userDaoRepository.updatePassword(user.getId(), encryptedPassword);
     }

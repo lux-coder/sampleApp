@@ -11,6 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import javax.sql.DataSource;
@@ -26,9 +28,14 @@ public class ApplicationEnvironment {
     public static final String SECRET = "secretKey12345678";
     public static final String CLIENT_DOMAIN_URL = "*";
 
+//    @Bean
+//    BCryptPasswordEncoder bCryptPasswordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
+
     @Bean
-    BCryptPasswordEncoder bCryptPasswordEncoder(){
-        return new BCryptPasswordEncoder();
+    public static PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Autowired

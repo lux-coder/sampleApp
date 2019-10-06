@@ -8,11 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/list")
     public ResponseEntity<?> getUsersList(){
@@ -109,7 +107,7 @@ public class UserController {
         String password = user.getPassword();
         try {
             if (newPassword != null && !newPassword.isEmpty() && !StringUtils.isEmpty(newPassword)) {
-                if (bCryptPasswordEncoder.matches(currentPassword, password)) {
+                if (passwordEncoder.matches(currentPassword, password)) {
                     logger.info("Passwords match");
                     userService.updateUserPassword(user, newPassword);
                 }

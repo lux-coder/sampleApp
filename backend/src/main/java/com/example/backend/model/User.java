@@ -21,7 +21,7 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
-    private Integer userRole;
+    private Integer     userRole;
 
     public User(){}
 
