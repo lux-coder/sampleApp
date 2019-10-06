@@ -44,8 +44,9 @@ export class SignupComponent implements OnInit, OnDestroy {
         this.loadingService.isLoading.next(false);
         this.alertService.showAlert(
           'You have registered successfully. Please check your email for account details.',
-          AlertType.SUCCESS
+          AlertType.SUCCESS          
         );
+        this.router.navigateByUrl('/login');
         console.log(response);
       },
       (error: HttpErrorResponse) => {
