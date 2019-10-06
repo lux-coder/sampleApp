@@ -57,13 +57,8 @@ public class UserController {
             return new ResponseEntity<>("Username exists!", HttpStatus.CONFLICT);
         } else {
             logger.info("Setting user data before try user save");
-
             String email = request.get("email");
             String firstName = request.get("firstName");
-//            String lastName = request.get("lastName");
-//            Date dateOfBirth = java.sql.Date.valueOf(request.get("dateOfBirth"));
-//            Integer userRole = Integer.valueOf(request.get("userRole"));
-//            Integer userRole = 1;
             try {
                 User user = userService.saveUser(username, email, firstName);
                 return new ResponseEntity<>(user, HttpStatus.OK);
@@ -71,7 +66,6 @@ public class UserController {
                 return new ResponseEntity<>("Error occurred during registration!", HttpStatus.BAD_REQUEST);
             }
         }
-
     }
 
     @PostMapping("/update")
@@ -81,8 +75,6 @@ public class UserController {
         if( userService.findById(Integer.parseInt(id)).getId() == null){
             return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
         }
-
-        //TODO It should take value from request not database!!!
         try {
             User user = userService.findById(Integer.parseInt(id));
             userService.updateUser(user, request);

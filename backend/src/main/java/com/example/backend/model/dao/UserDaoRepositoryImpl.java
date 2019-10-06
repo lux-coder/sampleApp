@@ -208,36 +208,6 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
         }
         logger.info("User before return {}", user.toString());
         return user;
-
-//
-//        PreparedStatement statement = null;
-//
-//        statement = connection.prepareStatement(GET_BY_USERNAME);
-//        statement.setString(1, username);
-//        ResultSet resultSet = statement.executeQuery();
-//
-//        if (resultSet.first()){
-//            try {
-//                logger.info("STATMENT {}", resultSet.toString());
-//                Integer id = resultSet.getInt("id");
-//                username = resultSet.getString("userName");
-//                String password =resultSet.getString("password");
-//                String email = resultSet.getString("email");
-//                String firstName = resultSet.getString("firstName");
-//                String lastName = resultSet.getString("lastName");
-//                Date dateOfBirth = resultSet.getDate("dateOfBirth");
-//                Integer userRole = resultSet.getInt("userRole");
-//
-//                return new User(id,username,password,email,firstName,lastName, dateOfBirth, userRole);
-//            } catch (Exception e){
-//                logger.error("Exception due to {} with stacktrace {}", e.getMessage(), e);
-//            }
-//        } else{
-//            logger.info("NO USER RETURN NULL");
-//            return null;
-//        }
-//        return null;
-
     }
 
     @Override
