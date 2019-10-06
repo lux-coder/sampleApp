@@ -14,6 +14,8 @@ public interface UserService {
 
     public User saveUser(String username, String password, String email, String firstName, String lastName, Date dateOfBirth);
 
+    public User saveUser(String username, String email, String firstName);
+
     public User saveUser(User user);
 
     public User findByUsername(String username) throws SQLException;

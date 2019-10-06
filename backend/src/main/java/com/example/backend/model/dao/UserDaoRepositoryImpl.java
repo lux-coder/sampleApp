@@ -17,9 +17,12 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
 
     private static final String CREATE_SQL = "INSERT INTO user (username, password, email, firstName, lastName, dateOfBirth) values (?, ?, ?, ?, ?, ?)";
     private static final String CREATE_SQL_WITH_ROLE = "INSERT INTO user (username, password, email, firstName, lastName, dateOfBirth, userRole) values (?, ?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_SQL = "";
+    private static final String REGISTER_SQL = "INSERT INTO user (username, password, email, firstName) values (?, ?, ?, ?)";
+    private static final String UPDATE_SQL = "UPDATE user SET email = ?, firstName = ?, lastName = ?, dateOfBirth = ? WHERE id = ?";
     private static final String DELETE_SQL = "DELETE FROM user WHERE id = ?";
+    private static final String CHANGE_PASSWORD_SQL = "UPDATE user SET password = ? WHERE id = ?";
     private static final String FIND_ALL_SQL = "SELECT id, username, password, email, firstName, lastName, dateOfBirth, userRole FROM user";
+    private static final String FIND_BY_ID_SQL = "SELECT * FROM user WHERE id = ?";
     //private static final String GET_BY_USERNAME = "SELECT id, username, password, email, firstName, lastName, dateOfBirth FROM user WHERE username = ?";
     private static final String GET_BY_USERNAME = "SELECT * FROM user WHERE username = ?";
 
@@ -59,7 +62,62 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     }
 
     @Override
-    public void update(User user) { }
+    public void register(User user) {
+        logger.info("In register User");
+        if(user != null){
+            try (PreparedStatement ps = connection.prepareStatement(REGISTER_SQL, Statement.RETURN_GENERATED_KEYS)){
+                ps.setString(1, user.getUsername());
+                ps.setString(2, user.getPassword());
+                ps.setString(3, user.getEmail());
+                ps.setString(4, user.getFirstName());
+
+                int numRowAffected = ps.executeUpdate();
+                try (ResultSet resultSet = ps.getGeneratedKeys()){
+                    if (resultSet.next()){
+                        user.setId(resultSet.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            logger.info("User registered");
+        }
+
+    }
+
+    @Override
+    public void updatePassword(Integer id, String encryptedPassword) {
+        logger.info("In updatePassword");
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(CHANGE_PASSWORD_SQL);
+            statement.setString(1, encryptedPassword);
+            statement.setInt(2,id);
+            int resultSet = statement.executeUpdate();
+            logger.info("User password changed");
+        } catch (SQLException e){
+            logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public void update(User user) {
+        logger.info("In update");
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(UPDATE_SQL);
+            statement.setString(1,user.getEmail());
+            statement.setString(2,user.getFirstName());
+            statement.setString(3,user.getLastName());
+            statement.setDate(4,user.getDateOfBirth());
+            statement.setInt(5, user.getId());
+            int resultSet = statement.executeUpdate();
+            logger.info("User updated");
+        } catch (SQLException e){
+            logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
+        }
+    }
 
     @Override
     public void delete(int id) {
@@ -77,7 +135,27 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
 
     @Override
     public User findById(int id) {
-        return null;
+        logger.info("In in findById");
+        User user = new User();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL);
+            statement.setInt(1,id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                user.setId(id);
+                user.setUsername(resultSet.getString("username"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFirstName(resultSet.getString("firstName"));
+                user.setLastName(resultSet.getString("lastName"));
+                user.setDateOfBirth(resultSet.getDate("dateOfBirth"));
+            }
+            logger.info("User found");
+        } catch (SQLException e){
+            logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
+        }
+        logger.info("User returned {}", user.toString());
+        return user;
     }
 
     @Override

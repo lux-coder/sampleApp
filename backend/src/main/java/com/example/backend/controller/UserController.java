@@ -60,12 +60,12 @@ public class UserController {
 
             String email = request.get("email");
             String firstName = request.get("firstName");
-            String lastName = request.get("lastName");
-            Date dateOfBirth = java.sql.Date.valueOf(request.get("dateOfBirth"));
-            //Integer userRole = Integer.valueOf(request.get("userRole"));
-            Integer userRole = 1;
+//            String lastName = request.get("lastName");
+//            Date dateOfBirth = java.sql.Date.valueOf(request.get("dateOfBirth"));
+//            Integer userRole = Integer.valueOf(request.get("userRole"));
+//            Integer userRole = 1;
             try {
-                User user = userService.saveUser(username, email, firstName, lastName, dateOfBirth, userRole);
+                User user = userService.saveUser(username, email, firstName);
                 return new ResponseEntity<>(user, HttpStatus.OK);
             } catch (Exception e){
                 return new ResponseEntity<>("Error occurred during registration!", HttpStatus.BAD_REQUEST);
@@ -97,20 +97,27 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody HashMap<String, String> request) throws SQLException {
         logger.info("In changePassword endpoint");
         String username = request.get("username");
+
+        logger.info("Show request {}",request.toString());
+        logger.info("Show request {}",request);
+
+
         User user = userService.findByUsername(username);
-        if (user == null){
+        if (user.getId() == null){
+            logger.error("No user found");
             return new ResponseEntity<>("User not found!", HttpStatus.BAD_REQUEST);
         }
-        String currentPassword = request.get("currentPassword");
-        String newPassword = request.get("newPassword");
-        String confirmPassword = request.get("confirmPassword");
-        if (!newPassword.equals(confirmPassword)) {
-            return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
-        }
+        String currentPassword = request.get("currentpassword");
+        String newPassword = request.get("newpassword");
+        String confirmPassword = request.get("confirmpassword");
+
+        logger.info("Passwords set!! {}__________{}________________{}", currentPassword, newPassword, confirmPassword);
+
         String password = user.getPassword();
         try {
             if (newPassword != null && !newPassword.isEmpty() && !StringUtils.isEmpty(newPassword)) {
                 if (bCryptPasswordEncoder.matches(currentPassword, password)) {
+                    logger.info("Passwords match");
                     userService.updateUserPassword(user, newPassword);
                 }
             } else {

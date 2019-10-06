@@ -71,6 +71,24 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User saveUser(String username, String email, String firstName) {
+        logger.info("In saveUser from register form");
+        String password = RandomStringUtils.randomAlphanumeric(8);
+        String encryptedPassword = bCryptPasswordEncoder.encode(password);
+        logger.info("password is {}", password);
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(encryptedPassword);
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        userDaoRepository.register(user);
+
+        //javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
+        return user;
+    }
+
+    @Override
     public User saveUser(User user) {
         logger.info("In saveUser simple");
         userDaoRepository.create(user);
@@ -86,6 +104,7 @@ public class UserServiceImpl implements UserService{
         } catch (SQLException e) {
             logger.info("No user with that name");
         }
+        logger.info("User before return from findByUsername in UserServiceImpl {}",user.toString());
         return user;
     }
 
@@ -146,7 +165,7 @@ public class UserServiceImpl implements UserService{
         logger.info("In updateUserPassword");
         String encryptedPassword = bCryptPasswordEncoder.encode(password);
         user.setPassword(encryptedPassword);
-        userDaoRepository.update(user);
+        userDaoRepository.updatePassword(user.getId(), encryptedPassword);
     }
 
     @Override

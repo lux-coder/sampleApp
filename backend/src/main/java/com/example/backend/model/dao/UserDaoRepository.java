@@ -9,7 +9,11 @@ public interface UserDaoRepository {
 
     public void create(User user);
 
+    public void register(User user);
+
     public void update(User user);
+
+    public void updatePassword(Integer id, String encryptedPassword);
 
     public void delete(int id);
 
