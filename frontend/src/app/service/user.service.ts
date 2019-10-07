@@ -34,6 +34,11 @@ export class UserService {
     });
   }
 
+  getUsers(): Observable<User[]> {
+    console.log("Calling for users")
+    return this.http.get<User[]>(`${this.host}/user/list`);
+  }
+
   logOut(): void {
     this.token = null;
     localStorage.removeItem('token');

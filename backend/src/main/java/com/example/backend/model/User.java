@@ -14,14 +14,14 @@ import java.util.Set;
 @ToString
 public class User implements Serializable {
 
-    private Integer id;
-    private String username;
-    private String password;
+    public Integer id;
+    public String username;
+    public String password;
     private String email;
     private String firstName;
     private String lastName;
     private Date dateOfBirth;
-    private Integer     userRole;
+    private Integer userRole;
 
     public User(){}
 
@@ -34,5 +34,14 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.userRole = userRole;
+    }
+
+    public User(Integer id, String username, String email, String firstName, String lastName, Date dateOfBirth) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
     }
 }

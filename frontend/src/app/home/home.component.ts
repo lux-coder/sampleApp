@@ -15,6 +15,7 @@ import { User } from '../model/user';
 export class HomeComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   user = new User();  
+  users: User[] = [];
   host: string;
   userHost: string;  
 
@@ -28,7 +29,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadingService.isLoading.next(true);
     this.getUserInfo(this.userService.loggInUsername);    
-    this.host = this.userService.host;    
+    this.host = this.userService.host;
+    this.getUsers();
     this.loadingService.isLoading.next(false);
   }
 
@@ -43,6 +45,20 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.user = null;
         this.logOut();
         this.router.navigateByUrl('/login');
+      }
+    ));
+  }
+
+  getUsers(): void{
+    this.subscriptions.push(this.userService.getUsers().subscribe(
+      (response: User[]) =>{
+        this.users = response;
+        console.log(this.user);
+        this.loadingService.isLoading.next(false);
+      },
+      error => {
+        console.log(error);
+        this.loadingService.isLoading.next(false);
       }
     ));
   }

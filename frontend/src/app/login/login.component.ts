@@ -43,11 +43,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           const token: string = response.headers.get('Authorization');
           this.userService.saveToken(token);
           if (this.userService.redirectUrl) {
-            this.router.navigateByUrl(this.userService.redirectUrl);
-            console.log("IM LOGGED IN");
+            this.router.navigateByUrl(this.userService.redirectUrl);            
           } else {
-            this.router.navigateByUrl('/home');
-            console.log("IM LOGGED IN?????");
+            this.router.navigate(['/profile/', user.username]);            
           }
           this.loadingService.isLoading.next(false);
         },

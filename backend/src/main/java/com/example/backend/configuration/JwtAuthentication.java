@@ -39,7 +39,7 @@ public class JwtAuthentication extends UsernamePasswordAuthenticationFilter {
         com.example.backend.model.User user = null;
         try {
             user = objectMapper.readValue(httpServletRequest.getInputStream(), com.example.backend.model.User.class);
-            logger.info("Creating user {}", user.toString());
+            logger.info("Fetching user {}", user.toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to convert Json into Java Object: " + e);
@@ -55,10 +55,7 @@ public class JwtAuthentication extends UsernamePasswordAuthenticationFilter {
         logger.info("In successfulAuthentication");
         User user = (User) authentication.getPrincipal();
         List<String> roles = new ArrayList<>();
-        user.getAuthorities()
-                .forEach(authority -> {
-                    roles.add(authority.getAuthority());
-                });
+        roles.add(String.valueOf(user.getAuthorities()));
         String jwtToken = JWT.create()
                 .withIssuer(httpServletRequest.getRequestURI())
                 .withSubject(user.getUsername())

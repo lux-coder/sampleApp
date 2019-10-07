@@ -129,7 +129,7 @@ public class UserController {
             user = userService.findByUsername(username);
             logger.info("THIS IS USER: {}",user.toString());
             userService.deleteUser(user);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error("Error {} {}", e.getMessage(), e);
 
         }

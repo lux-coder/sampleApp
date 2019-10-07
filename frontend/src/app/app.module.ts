@@ -21,16 +21,16 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { CacheInterceptor } from './interceptor/cache.interceptor';
 
 import { NgxLoadingModule } from 'ngx-loading';
+import { AuthenticationGuard } from './guard/authentication.guard';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'signup', component: SignupComponent },
   { path: 'resetpassword', component: ResetPasswordComponent },
-  /* { path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard] }, */
-  { path: 'home', component: HomeComponent },
-  /* { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthenticationGuard] }, */
-  { path: 'profile/:username', component: ProfileComponent },
+  { path: 'home', component: HomeComponent, canActivate: [AuthenticationGuard] },  
+  { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthenticationGuard] }, 
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
 
@@ -57,6 +57,8 @@ const appRoutes: Routes = [
     UserService,
     LoadingService,    
     AlertService,
+    AuthenticationGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

@@ -28,7 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     //private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "user/list", "user/**" };
     //private static final String[] PUBLIC_MATCHERS = { "/**" };
-    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "/user/profile/**", "/user/**", "/delete" };
+    //private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "/user/profile/**", "/user/**", "/delete" };
+    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**" };
 
     @Autowired
     private UserDetailsService userDetailsService;

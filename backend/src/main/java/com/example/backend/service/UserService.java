@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
 
     public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) throws SQLException;
 
@@ -18,7 +18,7 @@ public interface UserService extends UserDetailsService {
 
     public User saveUser(User user);
 
-    public User findByUsername(String username) throws SQLException;
+    public User findByUsername(String username);
 
     public User findByEmail(String email);
 

@@ -21,7 +21,7 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     private static final String UPDATE_SQL = "UPDATE user SET email = ?, firstName = ?, lastName = ?, dateOfBirth = ? WHERE id = ?";
     private static final String DELETE_SQL = "DELETE FROM user WHERE id = ?";
     private static final String CHANGE_PASSWORD_SQL = "UPDATE user SET password = ? WHERE id = ?";
-    private static final String FIND_ALL_SQL = "SELECT id, username, password, email, firstName, lastName, dateOfBirth, userRole FROM user";
+    private static final String FIND_ALL_SQL = "SELECT id, username, email, firstName, lastName, dateOfBirth FROM user";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM user WHERE id = ?";
     //private static final String GET_BY_USERNAME = "SELECT id, username, password, email, firstName, lastName, dateOfBirth FROM user WHERE username = ?";
     private static final String GET_BY_USERNAME = "SELECT * FROM user WHERE username = ?";
@@ -172,14 +172,13 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
             while (resultSet.next()){
                 Integer id = resultSet.getInt("id");
                 String userName = resultSet.getString("userName");
-                String password = resultSet.getString("password");
                 String email = resultSet.getString("email");
                 String firstName = resultSet.getString("firstName");
                 String lastName = resultSet.getString("lastName");
                 Date dateOfBirth = resultSet.getDate("dateOfBirth");
-                Integer userRole = resultSet.getInt("userRole");
 
-                users.add(new User(id, userName, password, email, firstName, lastName, dateOfBirth, userRole));
+                User user = new User(id, userName, email, firstName, lastName, dateOfBirth);
+                users.add(user);
             }
         } catch (SQLException e){
             logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
@@ -190,6 +189,7 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     @Override
     public User getByUsername(String username)  {
         logger.info("In getByUsername");
+        logger.info("In getByUsername {}", username);
         User user = new User();
 
         try {
@@ -197,14 +197,25 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
             statement.setString(1,username);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                user.setId(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("userName"));
-                user.setPassword(resultSet.getString("password"));
-                user.setEmail(resultSet.getString("email"));
-                user.setFirstName(resultSet.getString("firstName"));
-                user.setLastName(resultSet.getString("lastName"));
-                user.setDateOfBirth(resultSet.getDate("dateOfBirth"));
-                user.setUserRole(resultSet.getInt("userRole"));
+                Integer id = resultSet.getInt("id");
+                String userName = resultSet.getString("userName");
+                String password = resultSet.getString("password");
+                String email = resultSet.getString("email");
+                String firstName = resultSet.getString("firstName");
+                String lastName = resultSet.getString("lastName");
+                Date dateOfBirth = resultSet.getDate("dateOfBirth");
+                Integer userRole = resultSet.getInt("userRole");
+
+                user.setId(id);
+                user.setUsername(username);
+                user.setPassword(password);
+                user.setEmail(email);
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setDateOfBirth(dateOfBirth);
+                user.setUserRole(userRole);
+
+                logger.info("User {}", user.toString());
             }
             logger.info("User {}", user.toString());
         } catch (SQLException e){

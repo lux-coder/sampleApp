@@ -46,6 +46,26 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private JavaMailSender javaMailSender;
 
+
+    @Override
+    public User saveUser(String username, String email, String firstName) {
+        logger.info("In saveUser from register form");
+        String password = RandomStringUtils.randomAlphanumeric(8);
+        String encryptedPassword = passwordEncoder.encode(password);
+        logger.info("password is {}", password);
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(encryptedPassword);
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        userDaoRepository.register(user);
+
+        emailConstructor.constructNewUserEmail(user, password);
+
+        return user;
+    }
+
     @Override
     public User saveUser(String username, String email, String firstName, String lastName, Date dateOfBirth, Integer userRole) throws SQLException {
         logger.info("In saveUser");
@@ -79,26 +99,6 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
-    @Override
-    public User saveUser(String username, String email, String firstName) {
-        logger.info("In saveUser from register form");
-        String password = RandomStringUtils.randomAlphanumeric(8);
-        String encryptedPassword = passwordEncoder.encode(password);
-        logger.info("password is {}", password);
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(encryptedPassword);
-        user.setEmail(email);
-        user.setFirstName(firstName);
-        userDaoRepository.register(user);
-
-//        javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
-
-        emailConstructor.constructNewUserEmail(user, password);
-
-        return user;
-    }
 
     @Override
     public User saveUser(User user) {
@@ -185,21 +185,5 @@ public class UserServiceImpl implements UserService{
         logger.info("In deleteUser");
         userDaoRepository.delete(user.getId());
 
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, SQLException {
-        logger.info("In loadUserByUsername from userDetailService");
-        com.example.backend.model.User user = userService.findByUsername(username);
-        if(user.getId() == null){
-            throw new UsernameNotFoundException("Username " + username + "not found!");
-        }
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        Integer role_id = user.getUserRole();
-        Role role = userService.findRoleById(role_id);
-        logger.info("GOt role {}", role.getName());
-        authorities.add(new SimpleGrantedAuthority(role.getName()));
-        //return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 }
