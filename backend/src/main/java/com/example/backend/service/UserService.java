@@ -39,5 +39,5 @@ public interface UserService {
     public void deleteUser(User user);
 
 
-
+    void resetPassword(User user);
 }

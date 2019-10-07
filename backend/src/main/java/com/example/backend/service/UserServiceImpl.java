@@ -10,17 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -89,7 +83,7 @@ public class UserServiceImpl implements UserService{
         userDaoRepository.create(user);
 
 //        javaMailSender.send(emailConstructor.constructNewUserEmail(user, password));
-        logger.info("mail shpuič ne semt");
+
         //emailConstructor.constructNewUserEmail(user, password);
         return user;
     }
@@ -184,6 +178,20 @@ public class UserServiceImpl implements UserService{
     public void deleteUser(User user) {
         logger.info("In deleteUser");
         userDaoRepository.delete(user.getId());
+
+    }
+
+    @Override
+    public void resetPassword(User user) {
+        logger.info("In resetPassword");
+        String password = RandomStringUtils.randomAlphanumeric(8);
+        String encryptedPassword = passwordEncoder.encode(password);
+        logger.info("password is {}", password);
+
+        user.setPassword(encryptedPassword);
+        userDaoRepository.updatePassword(user.getId(), encryptedPassword);
+
+        emailConstructor.constructNewUserEmail(user, password);
 
     }
 }

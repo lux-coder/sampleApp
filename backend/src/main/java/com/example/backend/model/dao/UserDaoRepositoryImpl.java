@@ -25,6 +25,7 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
     private static final String FIND_BY_ID_SQL = "SELECT * FROM user WHERE id = ?";
     //private static final String GET_BY_USERNAME = "SELECT id, username, password, email, firstName, lastName, dateOfBirth FROM user WHERE username = ?";
     private static final String GET_BY_USERNAME = "SELECT * FROM user WHERE username = ?";
+    private static final String GET_BY_EMAIL = "SELECT * FROM user WHERE email = ? LIMIT 1";
 
     private Connection connection;
 
@@ -227,6 +228,40 @@ public class UserDaoRepositoryImpl implements UserDaoRepository{
 
     @Override
     public User getByEmail(String email) {
-        return null;
+        logger.info("In getByEmail");
+        logger.info("In getByEmail {}", email);
+        User user = new User();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(GET_BY_EMAIL);
+            statement.setString(1,email);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
+                String username = resultSet.getString("userName");
+                String password = resultSet.getString("password");
+                email = resultSet.getString("email");
+                String firstName = resultSet.getString("firstName");
+                String lastName = resultSet.getString("lastName");
+                Date dateOfBirth = resultSet.getDate("dateOfBirth");
+                Integer userRole = resultSet.getInt("userRole");
+
+                user.setId(id);
+                user.setUsername(username);
+                user.setPassword(password);
+                user.setEmail(email);
+                user.setFirstName(firstName);
+                user.setLastName(lastName);
+                user.setDateOfBirth(dateOfBirth);
+                user.setUserRole(userRole);
+
+                logger.info("User {}", user.toString());
+            }
+
+        } catch (SQLException e){
+            logger.error("Exception occurred due to {} with stacktrace {}  ",e.getMessage(), e);
+        }
+        logger.info("User before return {}", user.toString());
+        return user;
     }
 }

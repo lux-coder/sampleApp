@@ -120,6 +120,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/resetPassword/{email}")
+    public ResponseEntity<String> resetPassword(@PathVariable("email") String email) {
+        User user = userService.findByEmail(email);
+        if (user.getEmail() == null) {
+            return new ResponseEntity<String>("emailNotFound", HttpStatus.BAD_REQUEST);
+        }
+        userService.resetPassword(user);
+        return new ResponseEntity<String>("EmailSent!", HttpStatus.OK);
+    }
+
     @PostMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestBody HashMap<String, String> request) {
         logger.info("In deleteUser endpoint");
