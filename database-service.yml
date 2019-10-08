@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: database
-  namespace: koios-namespace
+  name: database-service
 spec:
   selector:
     app: database

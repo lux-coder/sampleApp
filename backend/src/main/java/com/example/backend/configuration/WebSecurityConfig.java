@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import javax.annotation.Resource;
 
@@ -29,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     //private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "user/list", "user/**" };
     //private static final String[] PUBLIC_MATCHERS = { "/**" };
     //private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "/user/profile/**", "/user/**", "/delete" };
-    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**" };
+    private static final String[] PUBLIC_MATCHERS = { "/user/login", "/user/register", "/user/resetPassword/**", "**/swagger-ui.html" };
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -54,5 +55,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(jwtAuthentication)
                 .addFilterBefore(new JwtAuthorization(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("**/**").
+                addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("**/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }

@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: backend
-  namespace: koios-namespace
 spec:
   replicas: 1
   selector:
