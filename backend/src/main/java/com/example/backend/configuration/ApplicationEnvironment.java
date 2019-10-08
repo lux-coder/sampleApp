@@ -32,11 +32,6 @@ public class ApplicationEnvironment {
     public static final String SECRET = "secretKey12345678";
     public static final String CLIENT_DOMAIN_URL = "*";
 
-//    @Bean
-//    BCryptPasswordEncoder bCryptPasswordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

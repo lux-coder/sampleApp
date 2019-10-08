@@ -15,6 +15,6 @@ spec:
       containers:
       - name: backend
         image: docker.io/luxcoder2/sampleapprepo:backend
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         -  containerPort: 8080
